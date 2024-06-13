@@ -339,6 +339,11 @@ if(!isset($_SESSION['username'])) {
             </a>
           </li>
           <li>
+            <a id="vessel-link" style="cursor:pointer;" class="">
+              <i class="bi bi-circle"></i><span>Vessels</span>
+            </a>
+          </li>
+          <li>
             <a href="#!" class="">
               <i class="bi bi-circle"></i><span>Maritime Programs</span>
             </a>
@@ -410,10 +415,11 @@ if(!isset($_SESSION['username'])) {
             $('#mhei-link').click(function(event) {
                 event.preventDefault();
                 $('#loader').show();
-                $('#main').load('mhei.php', function() {
+                $('#main').load('list_views/list_mhei.php', function() {
                     $('#loader').hide();
                     $('#mhei-link').addClass('active'); 
                     $('#shipping-company-link').removeClass('active'); 
+                    $('#vessel-link').removeClass('active'); 
                     $('#users-link').addClass('collapsed');
                     $('#dashboard-link').addClass('collapsed');
                 });
@@ -421,10 +427,23 @@ if(!isset($_SESSION['username'])) {
             $('#shipping-company-link').click(function(event) {
                 event.preventDefault();
                 $('#loader').show();
-                $('#main').load('shippingCompany.php', function() {
+                $('#main').load('list_views/list_shipping_company.php', function() {
                     $('#loader').hide();
                     $('#shipping-company-link').addClass('active'); 
                     $('#mhei-link').removeClass('active'); 
+                    $('#vessel-link').removeClass('active'); 
+                    $('#users-link').addClass('collapsed');
+                    $('#dashboard-link').addClass('collapsed');
+                });
+            });
+            $('#vessel-link').click(function(event) {
+                event.preventDefault();
+                $('#loader').show();
+                $('#main').load('list_views/list_vessel.php', function() {
+                    $('#loader').hide();
+                    $('#vessel-link').addClass('active'); 
+                    $('#mhei-link').removeClass('active'); 
+                    $('#shipping-company-link').removeClass('active'); 
                     $('#users-link').addClass('collapsed');
                     $('#dashboard-link').addClass('collapsed');
                 });
