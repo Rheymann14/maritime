@@ -6,24 +6,32 @@ if(!isset($_SESSION['username'])) {
     exit();
 }
 
-include 'includes/connection.php';
-$username = $link->real_escape_string($_SESSION['username']);
+  $curl = curl_init();
+  curl_setopt_array($curl, [
+      CURLOPT_URL => "http://127.0.0.1:8000/api/user/".$_SESSION['user_id'],
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_CUSTOMREQUEST => "GET",
+      CURLOPT_HTTPHEADER => [
+          "Accept: application/json",
+          "Content-Type: application/json",
+          "Authorization: Bearer " .$_SESSION['token']
+      ]
+  ]);
 
+  $response = curl_exec($curl);
+  $err = curl_error($curl);
 
-$sql_sel = "SELECT name, username, email, title, role_id FROM users INNER JOIN roles ON users.role_id = roles.id WHERE username = '$username'";
-$result_sel = $link->query($sql_sel);
+  curl_close($curl);
 
-if ($result_sel->num_rows > 0) {
-    // Output data
-    while($row_u = $result_sel->fetch_assoc()) {
-        $fname = $row_u["name"];
-        $email = $row_u["email"];
-        $title = $row_u["title"];
-        $user_level = $row_u["role_id"];
-    }
-} else {
-    echo "No Record Found!";
-}
+  if ($err) {     
+    displayError($err);
+  } else {
+      $data = json_decode($response, 1);
+      $fname = $data["name"];
+      $email = $data["email"];
+      $title = $data["role"]['title'];
+      $user_level = $data["role"]['id'];
+  }
 
 
 ?>
@@ -326,6 +334,16 @@ if ($result_sel->num_rows > 0) {
             </a>
           </li>
           <li>
+            <a id="shipping-company-link" style="cursor:pointer;" class="">
+              <i class="bi bi-circle"></i><span>Shipping Companies</span>
+            </a>
+          </li>
+          <li>
+            <a id="vessel-link" style="cursor:pointer;" class="">
+              <i class="bi bi-circle"></i><span>Vessels</span>
+            </a>
+          </li>
+          <li>
             <a href="#!" class="">
               <i class="bi bi-circle"></i><span>Maritime Programs</span>
             </a>
@@ -397,9 +415,35 @@ if ($result_sel->num_rows > 0) {
             $('#mhei-link').click(function(event) {
                 event.preventDefault();
                 $('#loader').show();
-                $('#main').load('mhei.php', function() {
+                $('#main').load('list_views/list_mhei.php', function() {
                     $('#loader').hide();
                     $('#mhei-link').addClass('active'); 
+                    $('#shipping-company-link').removeClass('active'); 
+                    $('#vessel-link').removeClass('active'); 
+                    $('#users-link').addClass('collapsed');
+                    $('#dashboard-link').addClass('collapsed');
+                });
+            });
+            $('#shipping-company-link').click(function(event) {
+                event.preventDefault();
+                $('#loader').show();
+                $('#main').load('list_views/list_shipping_company.php', function() {
+                    $('#loader').hide();
+                    $('#shipping-company-link').addClass('active'); 
+                    $('#mhei-link').removeClass('active'); 
+                    $('#vessel-link').removeClass('active'); 
+                    $('#users-link').addClass('collapsed');
+                    $('#dashboard-link').addClass('collapsed');
+                });
+            });
+            $('#vessel-link').click(function(event) {
+                event.preventDefault();
+                $('#loader').show();
+                $('#main').load('list_views/list_vessel.php', function() {
+                    $('#loader').hide();
+                    $('#vessel-link').addClass('active'); 
+                    $('#mhei-link').removeClass('active'); 
+                    $('#shipping-company-link').removeClass('active'); 
                     $('#users-link').addClass('collapsed');
                     $('#dashboard-link').addClass('collapsed');
                 });
