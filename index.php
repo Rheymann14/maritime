@@ -362,10 +362,10 @@ if(!isset($_SESSION['username'])) {
 
  
   <div class="d-flex justify-content-center align-items-center">
-  <div id="loader" class="spinner-border text-primary" role="status" style="display: none;">
-    <span class="visually-hidden">Loading...</span>
+    <div id="loader" class="spinner-border text-primary" role="status" style="display: none;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
-</div>
 
 
   </main><!-- End #main -->

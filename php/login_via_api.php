@@ -40,6 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($err) {     
         displayError($err);
+    } else if ($response == 'Invalid Credentials'){
+        displayError($response);
     } else {
         $data = json_decode($response, 1);
 
