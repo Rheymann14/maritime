@@ -95,7 +95,7 @@
                         //   echo "<td><span class='badge rounded-pill bg-secondary'>No Status</span></td>";
                         // }
                         echo
-                        "<td align='center' style='text-align: center;'>                  
+                        "<td align='center' style='text-align: center; width: 10%'>                  
                           <a href='php/delete_users.php?id=" . $shippingCompany['id'] . "' class='btn btn-danger btn-sm' data-toggle='tooltip' title='Delete Record' onclick=\"return confirm('Are you sure you want to delete this record?')\"><i class='ri-delete-bin-2-line'></i></a>
                           <a class='btn btn-success btn-sm loadVessel' data-id=" . $shippingCompany['id'] . " data-text=" . $shippingCompany['company_name'] . " data-toggle='tooltip' title='Delete Record'>
                               <i class='ri-arrow-right-line'></i>

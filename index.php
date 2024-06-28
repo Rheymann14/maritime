@@ -322,6 +322,12 @@ if(!isset($_SESSION['username'])) {
           <span>Users</span>
         </a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" id="users-link" style="cursor:pointer;">
+          <i class="bi bi-file-pdf"></i>
+          <span>SO Requests</span>
+        </a>
+      </li>
       <?php if ($user_level == 3): ?>
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
@@ -345,7 +351,7 @@ if(!isset($_SESSION['username'])) {
           </li>
           <li>
             <a href="#!" class="">
-              <i class="bi bi-circle"></i><span>Maritime Programs</span>
+              <i class="bi bi-circle"></i><span>PCG Staffs</span>
             </a>
           </li>
     

@@ -48,6 +48,7 @@
                 <tr>
                   <th>No</th>
                   <th>logo</th>
+                  <?php if ($id == 0): ?><th>Shipping Company</th><?php endif; ?>
                   <th>Imo Number/Registry Number</th>
                   <th>Vessel Name</th>
                   <th>Port of Registry</th>
@@ -63,8 +64,14 @@
                 <?php
                   session_start();
                   $curl = curl_init();
+                  if ($id > 0) {
+                    $url = "http://127.0.0.1:8000/api/shipping-company/".$id;
+                  }
+                  else {
+                    $url = "http://127.0.0.1:8000/api/vessels";
+                  }
                   curl_setopt_array($curl, [
-                      CURLOPT_URL => "http://127.0.0.1:8000/api/vessels",
+                      CURLOPT_URL => $url,
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_CUSTOMREQUEST => "GET",
                       CURLOPT_HTTPHEADER => [
@@ -82,7 +89,12 @@
                   if ($err) {     
                     displayError($err);
                   } else {
-                    $vessels = json_decode($response, 1);
+                    if ($id > 0){
+                      $vessels = json_decode($response, 1)['vessels'];
+                    }
+                    else {
+                      $vessels = json_decode($response, 1);
+                    }
                     foreach ($vessels as $i => $vessel) {
                       $i++;
                       echo "<tr>";
@@ -93,6 +105,9 @@
                               <img src='{$logo}' alt='School Logo' style='width:50px; height:auto;'>
                           </a>
                         </td>";
+                        if ($id == 0) {
+                          echo"<td>{$vessel['shipping_company']['company_name']}</td>";
+                        }
                         $imo_registry_number = $vessel['imo_number'].($vessel['imo_number'] != '' && $vessel['registry_number'] != ''?'/':'').$vessel['registry_number'];
                         echo"<td>{$imo_registry_number}</td>
                         <td>{$vessel['vessel_name']}</td>
@@ -155,12 +170,53 @@
                   <div class="modal-body">
                       <form id="vesselFormAdd" method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
+                          <label for="shippingCompanyAdd" class="form-label">Shipping Company</label>
+                          <select class="form-select" id="shippingCompanyAdd" name="shipping_company_id" required>
+                            <?php
+                                session_start();
+                                $curl = curl_init();
+                                curl_setopt_array($curl, [
+                                    CURLOPT_URL => "http://127.0.0.1:8000/api/shipping-companys",
+                                    CURLOPT_RETURNTRANSFER => true,
+                                    CURLOPT_CUSTOMREQUEST => "GET",
+                                    CURLOPT_HTTPHEADER => [
+                                        "Accept: application/json",
+                                        "Content-Type: application/json",
+                                        "Authorization: Bearer " .$_SESSION['token']
+                                    ]
+                                ]);
+
+                                $response = curl_exec($curl);
+                                $err = curl_error($curl);
+
+                                curl_close($curl);
+
+                                if ($err) {
+                                    echo "<option value=''>Error: $err</option>";
+                                } else {
+                                    $shippingCompanies = json_decode($response, true);
+                                    if (json_last_error() === JSON_ERROR_NONE) {
+                                        if (is_array($shippingCompanies)) {
+                                            foreach ($shippingCompanies as $shippingCompany) {
+                                                echo "<option value='{$shippingCompany['id']}'>{$shippingCompany['company_name']}</option>";
+                                            }
+                                        } else {
+                                            echo "<option value=''>Error: Unexpected API response format</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=''>Error: Invalid JSON response</option>";
+                                    }
+                                }
+                            ?>
+                        </select>
+                        </div>
+                        <div class="mb-3">
                           <label for="imoNumberAdd" class="form-label">IMO Number</label>
-                          <input type="text" class="form-control" id="imoNumberAdd" name="imoNumber" required>
+                          <input type="text" class="form-control" id="imoNumberAdd" name="imoNumber">
                         </div>
                         <div class="mb-3">
                           <label for="registryNumberAdd" class="form-label">Registry Number</label>
-                          <input type="text" class="form-control" id="registryNumberAdd" name="registryNumber" required>
+                          <input type="text" class="form-control" id="registryNumberAdd" name="registryNumber">
                         </div>
                         <div class="mb-3">
                           <label for="nameAdd" class="form-label">Vessel Name</label>
@@ -210,7 +266,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="submitAdd" data-bs-dismiss="modal">Add Vessel</button>
+                            <button type="submit" class="btn btn-primary" name="submitAdd">Add Vessel</button>
                         </div>
                     </form>
                   </div>
@@ -249,6 +305,7 @@
           success: function(response) {
             console.log(response); // Log the response in the console
             content = JSON.parse(response);
+            $('#add_vessel').modal('hide');
             Swal.fire({
                 icon: 'success',
                 title: 'Success',
