@@ -350,7 +350,7 @@ if(!isset($_SESSION['username'])) {
             </a>
           </li>
           <li>
-            <a href="#!" class="">
+            <a id="pcg-staff-link" style="cursor:pointer;" class="">
               <i class="bi bi-circle"></i><span>PCG Staffs</span>
             </a>
           </li>
@@ -415,6 +415,9 @@ if(!isset($_SESSION['username'])) {
                     $('#users-link').removeClass('collapsed'); // Remove the 'collapsed' class after loading users page
                     $('#dashboard-link').addClass('collapsed');
                     $('#mhei-link').removeClass('active');
+                    $('#pcg-staff-link').removeClass('active'); 
+                    $('#shipping-company-link').removeClass('active'); 
+                    $('#vessel-link').removeClass('active'); 
                 });
             });
 
@@ -424,6 +427,7 @@ if(!isset($_SESSION['username'])) {
                 $('#main').load('list_views/list_mhei.php', function() {
                     $('#loader').hide();
                     $('#mhei-link').addClass('active'); 
+                    $('#pcg-staff-link').removeClass('active'); 
                     $('#shipping-company-link').removeClass('active'); 
                     $('#vessel-link').removeClass('active'); 
                     $('#users-link').addClass('collapsed');
@@ -436,6 +440,7 @@ if(!isset($_SESSION['username'])) {
                 $('#main').load('list_views/list_shipping_company.php', function() {
                     $('#loader').hide();
                     $('#shipping-company-link').addClass('active'); 
+                    $('#pcg-staff-link').removeClass('active'); 
                     $('#mhei-link').removeClass('active'); 
                     $('#vessel-link').removeClass('active'); 
                     $('#users-link').addClass('collapsed');
@@ -448,6 +453,20 @@ if(!isset($_SESSION['username'])) {
                 $('#main').load('list_views/list_vessel.php', function() {
                     $('#loader').hide();
                     $('#vessel-link').addClass('active'); 
+                    $('#pcg-staff-link').removeClass('active'); 
+                    $('#mhei-link').removeClass('active'); 
+                    $('#shipping-company-link').removeClass('active'); 
+                    $('#users-link').addClass('collapsed');
+                    $('#dashboard-link').addClass('collapsed');
+                });
+            });
+            $('#pcg-staff-link').click(function(event) {
+                event.preventDefault();
+                $('#loader').show();
+                $('#main').load('list_views/list_pcg_staff.php', function() {
+                    $('#loader').hide();
+                    $('#pcg-staff-link').addClass('active'); 
+                    $('#vessel-link').removeClass('active'); 
                     $('#mhei-link').removeClass('active'); 
                     $('#shipping-company-link').removeClass('active'); 
                     $('#users-link').addClass('collapsed');
