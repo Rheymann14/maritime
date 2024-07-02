@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $curl = curl_init();
     curl_setopt_array($curl, [
-        CURLOPT_URL => "http://127.0.0.1:8000/api/login",
+        CURLOPT_URL => "https://maritimeobt.com/api/login",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_HTTPHEADER => [
@@ -40,6 +40,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($err) {     
         displayError($err);
+    } else if ($response == 'Invalid Credentials'){
+        displayError($response);
     } else {
         $data = json_decode($response, 1);
 

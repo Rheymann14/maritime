@@ -8,7 +8,7 @@ if(!isset($_SESSION['username'])) {
 
   $curl = curl_init();
   curl_setopt_array($curl, [
-      CURLOPT_URL => "http://127.0.0.1:8000/api/user/".$_SESSION['user_id'],
+      CURLOPT_URL => "https://maritimeobt.com/api/user/".$_SESSION['user_id'],
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_CUSTOMREQUEST => "GET",
       CURLOPT_HTTPHEADER => [
@@ -17,6 +17,18 @@ if(!isset($_SESSION['username'])) {
           "Authorization: Bearer " .$_SESSION['token']
       ]
   ]);
+
+  // $curl = curl_init();
+  // curl_setopt_array($curl, [
+  //     CURLOPT_URL => "https://maritimeobt.com/api/get-location",
+  //     CURLOPT_RETURNTRANSFER => true,
+  //     CURLOPT_CUSTOMREQUEST => "GET",
+  //     CURLOPT_HTTPHEADER => [
+  //         "Accept: application/json",
+  //         "Content-Type: application/json",
+  //         "Authorization: Bearer " .$_SESSION['token']
+  //     ]
+  // ]);
 
   $response = curl_exec($curl);
   $err = curl_error($curl);
@@ -31,6 +43,10 @@ if(!isset($_SESSION['username'])) {
       $email = $data["email"];
       $title = $data["role"]['title'];
       $user_level = $data["role"]['id'];
+
+      // $data = json_decode($response, 1);
+      // $lat = $data["lat"];
+      // $lng = $data["lng"];
   }
 
 
@@ -362,10 +378,10 @@ if(!isset($_SESSION['username'])) {
 
  
   <div class="d-flex justify-content-center align-items-center">
-  <div id="loader" class="spinner-border text-primary" role="status" style="display: none;">
-    <span class="visually-hidden">Loading...</span>
+    <div id="loader" class="spinner-border text-primary" role="status" style="display: none;">
+      <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
-</div>
 
 
   </main><!-- End #main -->
