@@ -185,7 +185,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="submitAdd" data-bs-dismiss="modal">Add Shipping Company</button>
+                            <button type="submit" class="btn btn-primary" name="submitAdd">Add Shipping Company</button>
                         </div>
                     </form>
                   </div>
@@ -204,9 +204,9 @@
     $(document).on('click', '.loadVessel', function(event) {
       var id = $(this).data('id');
       var text = $(this).data('text');
-      var url = 'list_views/list_vessel.php?id=' + id + '&text=' + encodeURIComponent(text);
-      // $('#main').load('list_views/list_vessel.php');
-      // $('#main').load('list_views/list_vessel.php?id=' + id + '&text=' + encodeURIComponent(text));
+      var url = 'list_views/ched/list_vessel.php?id=' + id + '&text=' + encodeURIComponent(text);
+      // $('#main').load('list_views/ched/list_vessel.php');
+      // $('#main').load('list_views/ched/list_vessel.php?id=' + id + '&text=' + encodeURIComponent(text));
       $('#main').load(url);
     });
     $('#shippingCompanyFormAdd').on('submit', function(event) {
@@ -215,7 +215,7 @@
       var formData = new FormData(this); // Create a FormData object
 
       $.ajax({
-          url: 'php/add_shipping_company.php', // Update with the correct URL of your PHP script
+          url: 'php/ched/add_shipping_company.php', // Update with the correct URL of your PHP script
           type: 'POST',
           data: formData,
           processData: false, // Prevent jQuery from processing the data
@@ -230,8 +230,8 @@
                 showConfirmButton: false,
                 timer: 1500
             }).then(function() {
-              // $('#add_shipping_company').modal('hide');
-              $('#main').load('list_views/list_shipping_company.php');
+              $('#add_shipping_company').modal('hide');
+              $('#main').load('list_views/ched/list_shipping_company.php');
             });
           },
           error: function(xhr, status, error) {

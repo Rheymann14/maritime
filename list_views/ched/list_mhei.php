@@ -215,7 +215,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" name="submitAdd" data-bs-dismiss="modal">Add MHEI</button>
+                            <button type="submit" class="btn btn-primary" name="submitAdd">Add MHEI</button>
                         </div>
                     </form>
                   </div>
@@ -243,7 +243,7 @@
       var formData = new FormData(this); // Create a FormData object
 
       $.ajax({
-          url: 'php/add_mhei.php', // Update with the correct URL of your PHP script
+          url: 'php/ched/add_mhei.php', // Update with the correct URL of your PHP script
           type: 'POST',
           data: formData,
           processData: false, // Prevent jQuery from processing the data
@@ -258,8 +258,8 @@
                 showConfirmButton: false,
                 timer: 1500
             }).then(function() {
-              // $('#add_mhei').modal('hide');
-              $('#main').load('list_views/list_mhei.php'); // Reload the page to update the table
+              $('#add_mhei').modal('hide');
+              $('#main').load('list_views/ched/list_mhei.php'); // Reload the page to update the table
               // $('#loader').hide();
             });
           },

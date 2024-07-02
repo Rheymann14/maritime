@@ -21,12 +21,12 @@
     }
 </style>
 <div class="pagetitle">
-  <!-- <h1>PCG STAFF</h1> -->
+  <!-- <h1>Maritime Program</h1> -->
   <!-- <nav>
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="index.html">Home</a></li>
       <li class="breadcrumb-item">Table</li>
-      <li class="breadcrumb-item active">PCG STAFF</li>
+      <li class="breadcrumb-item active">Maritime Program</li>
     </ol>
   </nav> -->
 </div><!-- End Page Title -->
@@ -38,7 +38,7 @@
     <div class="col-lg-12">
       <div class="card">
         <div class="card-body">
-          <h5 class="card-title">PCG STAFF List</h5>
+          <h5 class="card-title">Maritime Program List</h5>
           <div class="d-flex justify-content-between">
             <div>
               <a href="export_users.php" type="button" class="btn btn-primary">
@@ -48,7 +48,7 @@
                 <i class="bx bxs-file-import"></i> Import
               </button>
             </div>
-            <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#add_pcg_staff">
+            <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#add_maritime_program">
                 <i class="bx bxs-plus-circle"></i> Add
             </button>
           </div>
@@ -57,15 +57,9 @@
               <thead>
                 <tr>
                   <th>No</th>
-                  <th>PCG STAFF Name</th>
-                  <th>Gender</th>
-                  <th>Email Address</th>
-                  <th>Username</th>
-                  <th>Rank</th>
-                  <th>Unit Assigned</th>
-                  <th>Unit Address</th>
-                  <th>Contact Number</th>
-                  <th>Status</th>
+                  <th>Course</th>
+                  <th>Description</th>
+                  <th>Status
                   <th>Action</th>
                 </tr>
               </thead>
@@ -74,7 +68,7 @@
                   session_start();
                   $curl = curl_init();
                   curl_setopt_array($curl, [
-                      CURLOPT_URL => "http://127.0.0.1:8000/api/pcg-staffs",
+                      CURLOPT_URL => "http://127.0.0.1:8000/api/maritime-programs",
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_CUSTOMREQUEST => "GET",
                       CURLOPT_HTTPHEADER => [
@@ -92,30 +86,24 @@
                   if ($err) {     
                     displayError($err);
                   } else {
-                    $pcg_staffs = json_decode($response, 1);
-                    foreach ($pcg_staffs as $i => $pcg_staff) {
+                    $maritime_programs = json_decode($response, 1);
+                    foreach ($maritime_programs as $i => $maritime_program) {
                       $i++;
                       echo "<tr>";
                         echo "<td>{$i}</td>
-                        <td>{$pcg_staff['user']['name']}</td>
-                        <td>MALE</td>
-                        <td>{$pcg_staff['user']['email']}</td>
-                        <td>{$pcg_staff['user']['username']}</td>
-                        <td>{$pcg_staff['rank']}</td>
-                        <td>{$pcg_staff['unit_assigned']}</td>
-                        <td>{$pcg_staff['unit_address']}</td>
-                        <td>{$pcg_staff['contact_number']}</td>";
-                        $status = $pcg_staff['user']['status'];
-                        if ($status == 'ACTIVE') {
+                        <td>{$maritime_program['course']}</td>
+                        <td>{$maritime_program['description']}</td>";
+                        $status = $maritime_program['status'];
+                        if ($status == 'OFFERED') {
                           echo "<td><span class='badge rounded-pill bg-success'>{$status}</span></td>";
-                        } elseif ($status == 'INACTIVE') {
+                        } elseif ($status == 'NOT OFFERED') {
                           echo "<td><span class='badge rounded-pill bg-danger'>{$status}</span></td>";
                         } else {
                           echo "<td><span class='badge rounded-pill bg-secondary'>No Status</span></td>";
                         }
                         echo
                         "<td align='center' style='text-align: center;'>                  
-                          <a href='php/delete_users.php?id=" . $pcg_staff['id'] . "' class='btn btn-danger btn-sm' data-toggle='tooltip' title='Delete Record' onclick=\"return confirm('Are you sure you want to delete this record?')\"><i class='ri-delete-bin-2-line'></i></a>
+                          <a href='php/delete_users.php?id=" . $maritime_program['id'] . "' class='btn btn-danger btn-sm' data-toggle='tooltip' title='Delete Record' onclick=\"return confirm('Are you sure you want to delete this record?')\"><i class='ri-delete-bin-2-line'></i></a>
                         </td>";
                       echo "</tr>";
                     }
@@ -128,7 +116,7 @@
             <div class="modal-dialog modal-dialog-centered modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title">Import PCG STAFF</h5>
+                  <h5 class="modal-title">Import Maritime Program</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="import_users.php" method="POST" enctype="multipart/form-data">  
@@ -148,61 +136,28 @@
               </div>
             </div>
           </div>
-          <div class="modal fade" id="add_pcg_staff" tabindex="-1" aria-labelledby="add_pcg_staffLabel" aria-hidden="true">
+          <div class="modal fade" id="add_maritime_program" tabindex="-1" aria-labelledby="add_maritime_programLabel" aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="add_pcg_staffLabel">Add PCG STAFF</h5>
+                    <h5 class="modal-title" id="add_maritime_programLabel">Add Maritime Program</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                   <form id="pcgStaffFormAdd" method="POST" enctype="multipart/form-data">
-                    <div class="mb-3">
-                      <div class="d-flex justify-content-start mb-3">
-                        <div class="me-3">
-                          <label class="form-label">Gender: </label>
-                        </div>
-                        <div class="me-3">
-                            <input type="radio" id="genderMale" name="gender" value="MALE" required>
-                            <label for="genderMale">Male</label>
-                        </div>
-                        <div class="me-3">
-                            <input type="radio" id="genderFemale" name="gender" value="FEMALE" required>
-                            <label for="genderFemale">Female</label>
-                        </div>
+                    <div class="d-flex justify-content-start mb-3">
+                      <div class="me-3">
+                        <label for="courseAdd" class="form-label">Course</label>
+                        <input type="text" class="form-control" id="courseAdd" name="course" required>
                       </div>
-                    </div>
-                    <div class="mb-3">
-                      <label for="nameAdd" class="form-label">PCG STAFF Name</label>
-                      <input type="text" class="form-control" id="nameAdd" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="emailAddressAdd" class="form-label">Email Address</label>
-                      <input type="email" class="form-control" id="emailAddressAdd" name="emailAddress" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="usernameAdd" class="form-label">Username</label>
-                      <input type="text" class="form-control" id="usernameAdd" name="username" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="rankAdd" class="form-label">Rank</label>
-                      <input type="text" class="form-control" id="rankAdd" name="rank" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="unitAssignedAdd" class="form-label">Unit Assigned</label>
-                      <input type="text" class="form-control" id="unitAssignedAdd" name="unitAssigned" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="unitAddressAdd" class="form-label">Unit Address</label>
-                      <input type="text" class="form-control" id="unitAddressAdd" name="unitAddress" required>
-                    </div>
-                    <div class="mb-3">
-                      <label for="contactNumberAdd" class="form-label">Contact Number</label>
-                      <input type="text" class="form-control" id="contactNumberAdd" name="contactNumber" required>
+                      <div class="me-3">
+                        <label for="descriptionAdd" class="form-label">Description</label>
+                        <input type="text" class="form-control" id="descriptionAdd" name="description" required>
+                      </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" name="submitAdd">Add PCG STAFF</button>
+                        <button type="submit" class="btn btn-primary" name="submitAdd">Add Maritime Program</button>
                     </div>
                   </form>
                 </div>
@@ -230,7 +185,7 @@
       var formData = new FormData(this); // Create a FormData object
 
       $.ajax({
-          url: 'php/add_pcg_staff.php', // Update with the correct URL of your PHP script
+          url: 'php/mhei/add_maritime_program.php', // Update with the correct URL of your PHP script
           type: 'POST',
           data: formData,
           processData: false, // Prevent jQuery from processing the data
@@ -245,8 +200,8 @@
                 showConfirmButton: false,
                 timer: 1500
             }).then(function() {
-              // $('#add_pcg_staff').modal('hide');
-              $('#main').load('list_views/list_pcg_staff.php'); // Reload the page to update the table
+              $('#add_maritime_program').modal('hide');
+              $('#main').load('list_views/mhei/list_maritime_programs.php'); // Reload the page to update the table
               // $('#loader').hide();
             });
           },

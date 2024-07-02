@@ -27,7 +27,7 @@ if(!isset($_SESSION['username'])) {
     displayError($err);
   } else {
       $data = json_decode($response, 1);
-      $fname = $data["name"];
+      $username = $data["username"];
       $email = $data["email"];
       $title = $data["role"]['title'];
       $user_level = $data["role"]['id'];
@@ -246,12 +246,12 @@ if(!isset($_SESSION['username'])) {
 
           <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
             <img src="assets/img/finallogo.png" alt="Profile" class="rounded-circle">
-            <span class="d-none d-md-block dropdown-toggle ps-2"><?=$fname?></span>
+            <span class="d-none d-md-block dropdown-toggle ps-2"><?=$username?></span>
           </a><!-- End Profile Iamge Icon -->
 
           <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
             <li class="dropdown-header">
-              <h6><?=$fname?></h6>
+              <h6><?=$username?></h6>
               <span><?=$title?></span>
             </li>
             <li>
@@ -322,42 +322,65 @@ if(!isset($_SESSION['username'])) {
           <span>Users</span>
         </a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link collapsed" id="users-link" style="cursor:pointer;">
           <i class="bi bi-file-pdf"></i>
           <span>SO Requests</span>
         </a>
-      </li>
-      <?php if ($user_level == 3): ?>
-      <li class="nav-item">
-        <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-          <i class="bi bi-menu-button-wide"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
-        </a>
-        <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-          <li>
-            <a id="mhei-link" style="cursor:pointer;" class="">
-              <i class="bi bi-circle"></i><span>MHEIS</span>
-            </a>
-          </li>
-          <li>
-            <a id="shipping-company-link" style="cursor:pointer;" class="">
-              <i class="bi bi-circle"></i><span>Shipping Companies</span>
-            </a>
-          </li>
-          <li>
-            <a id="vessel-link" style="cursor:pointer;" class="">
-              <i class="bi bi-circle"></i><span>Vessels</span>
-            </a>
-          </li>
-          <li>
-            <a id="pcg-staff-link" style="cursor:pointer;" class="">
-              <i class="bi bi-circle"></i><span>PCG Staffs</span>
-            </a>
-          </li>
+      </li> -->
+      <?php if ($user_level == 2): ?>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#" id= "management-link">
+            <i class="bi bi-menu-button-wide"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li>
+              <a id="maritime-programs-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>Maritime Programs</span>
+              </a>
+            </li>
+            <li>
+              <a id="students-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>Students</span>
+              </a>
+            </li>
+            <li>
+              <a id="ots-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>On-Board Training Supervisors</span>
+              </a>
+            </li>
+          </ul>
+        </li><!-- End Components Nav -->
+      <?php elseif ($user_level == 3): ?>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#" id= "management-link">
+            <i class="bi bi-menu-button-wide"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li>
+              <a id="mhei-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>MHEIS</span>
+              </a>
+            </li>
+            <li>
+              <a id="shipping-company-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>Shipping Companies</span>
+              </a>
+            </li>
+            <li>
+              <a id="vessel-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>Vessels</span>
+              </a>
+            </li>
+            <li>
+              <a id="pcg-staff-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>PCG Staffs</span>
+              </a>
+            </li>
+      
     
-  
-        </ul>
-      </li><!-- End Components Nav -->
+          </ul>
+        </li><!-- End Components Nav -->
       <?php endif; ?>
 
     </ul>
@@ -383,98 +406,132 @@ if(!isset($_SESSION['username'])) {
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <script>
-        $(document).ready(function() {
-            // Check if 'load' parameter exists in the URL
-            var urlParams = new URLSearchParams(window.location.search);
-            var loadPage = urlParams.get('load');
+    function updateUI() {
+        $('#loader').hide();
+        $('#dashboard-link').addClass('collapsed');
+        $('#users-link').addClass('collapsed');
+        $('#mhei-link').removeClass('active'); 
+        $('#shipping-company-link').removeClass('active'); 
+        $('#vessel-link').removeClass('active'); 
+        $('#pcg-staff-link').removeClass('active'); 
+        $('#maritime-programs-link').removeClass('active'); 
+        $('#students-link').removeClass('active'); 
+        $('#ots-link').removeClass('active'); 
+    }
+    
+    $(document).ready(function() {
+        // Check if 'load' parameter exists in the URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var loadPage = urlParams.get('load');
 
-            if (loadPage) {
-                $('#loader').show();
-                $('#main').load(loadPage + '.php', function() {
-                    $('#loader').hide();
-                    if (loadPage === 'users') {
-                        $('#users-link').removeClass('collapsed');
-                        $('#dashboard-link').addClass('collapsed');
-                    }
-                });
-            }
+        if (loadPage) {
+            $('#loader').show();
+            $('#main').load(loadPage + '.php', function() {
+                $('#loader').hide();
+                if (loadPage === 'users') {
+                  $('#dashboard-link').addClass('collapsed');
+                  $('#users-link').removeClass('collapsed');
+                  $('#management-link').removeClass('collapsed');
+                }
+            });
+        }
 
-            $('#profile-link').click(function(event) {
-                event.preventDefault(); // Prevent the default link behavior
-                $('#loader').show();
-                $('#main').load('profile.php', function() {
-                    $('#loader').hide();
-                });
-            });
-
-            $('#users-link').click(function(event) {
-                event.preventDefault();
-                $('#loader').show();
-                $('#main').load('users.php', function() {
-                    $('#loader').hide();
-                    $('#users-link').removeClass('collapsed'); // Remove the 'collapsed' class after loading users page
-                    $('#dashboard-link').addClass('collapsed');
-                    $('#mhei-link').removeClass('active');
-                    $('#pcg-staff-link').removeClass('active'); 
-                    $('#shipping-company-link').removeClass('active'); 
-                    $('#vessel-link').removeClass('active'); 
-                });
-            });
-
-            $('#mhei-link').click(function(event) {
-                event.preventDefault();
-                $('#loader').show();
-                $('#main').load('list_views/list_mhei.php', function() {
-                    $('#loader').hide();
-                    $('#mhei-link').addClass('active'); 
-                    $('#pcg-staff-link').removeClass('active'); 
-                    $('#shipping-company-link').removeClass('active'); 
-                    $('#vessel-link').removeClass('active'); 
-                    $('#users-link').addClass('collapsed');
-                    $('#dashboard-link').addClass('collapsed');
-                });
-            });
-            $('#shipping-company-link').click(function(event) {
-                event.preventDefault();
-                $('#loader').show();
-                $('#main').load('list_views/list_shipping_company.php', function() {
-                    $('#loader').hide();
-                    $('#shipping-company-link').addClass('active'); 
-                    $('#pcg-staff-link').removeClass('active'); 
-                    $('#mhei-link').removeClass('active'); 
-                    $('#vessel-link').removeClass('active'); 
-                    $('#users-link').addClass('collapsed');
-                    $('#dashboard-link').addClass('collapsed');
-                });
-            });
-            $('#vessel-link').click(function(event) {
-                event.preventDefault();
-                $('#loader').show();
-                $('#main').load('list_views/list_vessel.php', function() {
-                    $('#loader').hide();
-                    $('#vessel-link').addClass('active'); 
-                    $('#pcg-staff-link').removeClass('active'); 
-                    $('#mhei-link').removeClass('active'); 
-                    $('#shipping-company-link').removeClass('active'); 
-                    $('#users-link').addClass('collapsed');
-                    $('#dashboard-link').addClass('collapsed');
-                });
-            });
-            $('#pcg-staff-link').click(function(event) {
-                event.preventDefault();
-                $('#loader').show();
-                $('#main').load('list_views/list_pcg_staff.php', function() {
-                    $('#loader').hide();
-                    $('#pcg-staff-link').addClass('active'); 
-                    $('#vessel-link').removeClass('active'); 
-                    $('#mhei-link').removeClass('active'); 
-                    $('#shipping-company-link').removeClass('active'); 
-                    $('#users-link').addClass('collapsed');
-                    $('#dashboard-link').addClass('collapsed');
-                });
+        $('#profile-link').click(function(event) {
+            event.preventDefault(); // Prevent the default link behavior
+            $('#loader').show();
+            $('#main').load('profile.php', function() {
+                $('#loader').hide();
             });
         });
-    </script>
+
+        $('#dashboard-link').click(function(event) {
+            updateUI();
+            if ($('#components-nav').hasClass('show')) {
+              $('#management-link').removeClass('collapsed');
+              $('#components-nav').collapse('hide'); // Collapse if it's currently shown
+            }
+            $('#dasboard-link').removeClass('collapsed');
+        });
+
+        $('#users-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('users.php', function() {
+              updateUI();
+              if ($('#components-nav').hasClass('show')) {
+                $('#management-link').removeClass('collapsed');
+                $('#components-nav').collapse('hide'); // Collapse if it's currently shown
+              }
+              $('#users-link').removeClass('collapsed');
+            });
+        });
+
+        $('#management-link').click(function(event) {
+            updateUI();
+            if ($('#components-nav').hasClass('show')) {
+              $('#management-link').removeClass('collapsed');
+              $('#components-nav').collapse('hide'); // Collapse if it's currently shown
+            }
+        });
+
+        $('#mhei-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/ched/list_mhei.php', function() {
+              updateUI();
+              $('#mhei-link').addClass('active'); 
+            });
+        });
+        $('#shipping-company-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/ched/list_shipping_company.php', function() {
+              updateUI();
+              $('#shipping-company-link').addClass('active'); 
+            });
+        });
+        $('#vessel-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/ched/list_vessel.php', function() {
+              updateUI();
+              $('#vessel-link').addClass('active'); 
+            });
+        });
+        $('#pcg-staff-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/ched/list_pcg_staff.php', function() {
+              updateUI();
+              $('#pcg-staff-link').addClass('active'); 
+            });
+        });
+        $('#maritime-programs-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/mhei/list_maritime_programs.php', function() {
+              updateUI();
+              $('#maritime-programs-link').addClass('active'); 
+            });
+        });
+        $('#students-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/mhei/list_pcg_staff.php', function() {
+              updateUI();
+              $('#students-link').addClass('active'); 
+            });
+        });
+        $('#ots-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/mhei/list_pcg_staff.php', function() {
+              updateUI();
+              $('#ots-link').addClass('active'); 
+            });
+        });
+    });
+  </script>
 
   <!-- Vendor JS Files -->
   <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>

@@ -283,7 +283,7 @@
   $(document).ready(function() {
     $('#vesselTable').DataTable();
     $(document).on('click', '.back', function(event) {
-      $('#main').load('list_views/list_shipping_company.php');
+      $('#main').load('list_views/ched/list_shipping_company.php');
     });
     $('#vesselFormAdd').on('submit', function(event) {
       id = <?php echo json_encode($id); ?>;
@@ -297,7 +297,7 @@
       }
 
       $.ajax({
-          url: 'php/add_vessel.php', // Update with the correct URL of your PHP script
+          url: 'php/ched/add_vessel.php', // Update with the correct URL of your PHP script
           type: 'POST',
           data: formData,
           processData: false, // Prevent jQuery from processing the data
@@ -313,12 +313,12 @@
                 showConfirmButton: false,
                 timer: 1500
             }).then(function() {
-              // $('#add_vessel').modal('hide');
+              $('#add_vessel').modal('hide');
               if (id > 0) {
-                var GoTourl = 'list_views/list_vessel.php?id=' + id + '&text=' + encodeURIComponent(text);
+                var GoTourl = 'list_views/ched/list_vessel.php?id=' + id + '&text=' + encodeURIComponent(text);
               }
               else {
-                var GoTourl = 'list_views/list_vessel.php';
+                var GoTourl = 'list_views/ched/list_vessel.php';
               }
               $('#main').load(GoTourl);
             });
