@@ -381,6 +381,26 @@ if(!isset($_SESSION['username'])) {
     
           </ul>
         </li><!-- End Components Nav -->
+      <?php elseif ($user_level == 4): ?>
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#" id= "management-link">
+            <i class="bi bi-menu-button-wide"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li>
+              <a id="vessel-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>Vessels</span>
+              </a>
+            </li>
+            <li>
+              <a id="cadets-link" style="cursor:pointer;" class="">
+                <i class="bi bi-circle"></i><span>Cadets</span>
+              </a>
+            </li>
+      
+    
+          </ul>
+        </li><!-- End Components Nav -->
       <?php endif; ?>
 
     </ul>
@@ -417,6 +437,7 @@ if(!isset($_SESSION['username'])) {
         $('#maritime-programs-link').removeClass('active'); 
         $('#students-link').removeClass('active'); 
         $('#ots-link').removeClass('active'); 
+        $('#cadets-link').removeClass('active'); 
     }
     
     $(document).ready(function() {
@@ -528,6 +549,14 @@ if(!isset($_SESSION['username'])) {
             $('#main').load('list_views/mhei/list_pcg_staff.php', function() {
               updateUI();
               $('#ots-link').addClass('active'); 
+            });
+        });
+        $('#cadets-link').click(function(event) {
+            event.preventDefault();
+            $('#loader').show();
+            $('#main').load('list_views/shipping_company/list_cadets.php', function() {
+              updateUI();
+              $('#cadets-link').addClass('active'); 
             });
         });
     });
