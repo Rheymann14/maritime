@@ -12,7 +12,8 @@
 <body>
 <?php
 session_start();
-$_SESSION['default_ip'] = "192.168.1.128:8000";
+$_SESSION['default_ip'] = "maritimeobt.com";
+// $_SESSION['default_ip'] = "192.168.1.128:8000";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
