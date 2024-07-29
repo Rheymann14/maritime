@@ -19,6 +19,13 @@
         justify-content: center;
         display: flex;
     }
+    .filter-row {
+        margin-bottom: 10px;
+    }
+    .filter-label {
+        margin-right: 10px;
+        margin-top: 10px;
+    }
 </style>
 <div class="pagetitle">
   <!-- <h1>MHEI</h1> -->
@@ -39,18 +46,34 @@
       <div class="card">
         <div class="card-body">
           <h5 class="card-title">MHEI List</h5>
-          <div class="d-flex justify-content-between">
-            <div>
-              <a href="export_users.php" type="button" class="btn btn-primary">
+          <div class="d-flex justify-content-between mb-3">
+            <div class="d-flex">
+              <!-- <a href="export_users.php" type="button" class="btn btn-primary me-2">
                 <i class="ri-file-excel-2-line"></i> Export
-              </a>
-              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#import_user">
-                <i class="bx bxs-file-import"></i> Import
+              </a> -->
+              <div class="dropdown">
+                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bx bxs-file-import"></i> Import
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_mhei">
+                          Upload Excel
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="files/mheis-template.xlsx" download>
+                          Download Template
+                      </a>
+                    </li>
+                </ul>
+              </div>
+            </div>
+            <div>
+              <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#add_mhei">
+                  <i class="bx bxs-plus-circle"></i> Add
               </button>
             </div>
-            <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#add_mhei">
-                <i class="bx bxs-plus-circle"></i> Add
-            </button>
           </div>
           <div class="table-responsive" style="margin-top:2%;">
             <table class="hover cell-border" id="mheiTable">
@@ -74,7 +97,7 @@
                   session_start();
                   $curl = curl_init();
                   curl_setopt_array($curl, [
-                      CURLOPT_URL => "http://127.0.0.1:8000/api/mheis",
+                      CURLOPT_URL => $_SESSION['default_ip']."/api/mheis",
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_CUSTOMREQUEST => "GET",
                       CURLOPT_HTTPHEADER => [
@@ -94,9 +117,8 @@
                   } else {
                     $mheis = json_decode($response, 1);
                     foreach ($mheis as $i => $mhei) {
-                      $i++;
                       echo "<tr>";
-                        echo "<td>{$i}</td>";
+                        echo "<td></td>";
                         $logo = !empty($mhei['logo']) ? $mhei['logo'] : 'mhei_logo/default.jpg';
                         echo "<td>
                           <a href='{$logo}' target='_blank'>
@@ -129,19 +151,19 @@
               </tbody>
             </table>
           </div>
-          <div class="modal fade" data-bs-backdrop='static' id="import_user" tabindex="-1">
+          <div class="modal fade" data-bs-backdrop='static' id="import_mhei" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Import MHEI</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="import_users.php" method="POST" enctype="multipart/form-data">  
+                <form action="php/ched/import_mheis.php" method="POST" enctype="multipart/form-data">  
                   <div class="modal-body">
                     <div class="row mb-3">
                       <label for="inputEmail3" class="col-sm-2 col-form-label">Import File</label>
                       <div class="col-sm-10">
-                        <input type="file" class="form-control" id="evidence" name="evidence" required>
+                        <input type="file" class="form-control" id="excel_mhei" name="excel_mhei" required>
                       </div>
                     </div>
                   </div>
@@ -235,7 +257,17 @@
 
 <script>
   $(document).ready(function() {
-    $('#mheiTable').DataTable();
+    $('#mheiTable').DataTable({
+        "drawCallback": function(settings) {
+            var api = this.api();
+            x = 0;
+            api.rows().every(function(rowIdx, tableLoop, rowLoop) {
+              x++;
+                // Set the No column with the original row index + 1
+                $(api.cell(rowIdx, 0).node()).html(x);
+            });
+        }
+    });
     $('#mheiFormAdd').on('submit', function(event) {
       // $('#loader').show();
       event.preventDefault(); // Prevent the default form submission

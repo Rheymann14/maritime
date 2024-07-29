@@ -20,12 +20,26 @@
           <h5 class="card-title">Shipping Company List</h5>
           <div class="d-flex justify-content-between">
             <div>
-              <a href="export_users.php" type="button" class="btn btn-primary">
+              <!-- <a href="export_users.php" type="button" class="btn btn-primary me-2">
                 <i class="ri-file-excel-2-line"></i> Export
-              </a>
-              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#import_user">
-                <i class="bx bxs-file-import"></i> Import
-              </button>
+              </a> -->
+              <div class="dropdown">
+                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bx bxs-file-import"></i> Import
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_shipping_companies">
+                          Upload Excel
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="files/shipping-companies-template.xlsx" download>
+                          Download Template
+                      </a>
+                    </li>
+                </ul>
+              </div>
             </div>
             <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#add_shipping_company">
                 <i class="bx bxs-plus-circle"></i> Add
@@ -39,10 +53,10 @@
                   <th>logo</th>
                   <th>Shipping Company Name</th>
                   <th>Address</th>
-                  <th>Email Address</th>
+                  <!-- <th>Email Address</th> -->
                   <th>Contact Number</th>
                   <th>Region</th>
-                  <th>Status</th>
+                  <!-- <th>Status</th> -->
                   <th>Action</th>
                 </tr>
               </thead>
@@ -51,7 +65,7 @@
                   session_start();
                   $curl = curl_init();
                   curl_setopt_array($curl, [
-                      CURLOPT_URL => "http://127.0.0.1:8000/api/shipping-companys",
+                      CURLOPT_URL => $_SESSION['default_ip']."/api/shipping-companys",
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_CUSTOMREQUEST => "GET",
                       CURLOPT_HTTPHEADER => [
@@ -82,10 +96,9 @@
                         </td>   
                         <td>{$shippingCompany['company_name']}</td>
                         <td>{$shippingCompany['address']}</td>
-                        <td></td>
                         <td>{$shippingCompany['contact_number']}</td>
-                        <td>{$shippingCompany['region']}</td>
-                        <td></td>";
+                        <td>{$shippingCompany['region']}</td>";
+                        // <td></td>";
                         // $status = $shippingCompany['status'];
                         // if ($status == 'ENABLED') {
                         //   echo "<td><span class='badge rounded-pill bg-success'>{$status}</span></td>";
@@ -108,14 +121,14 @@
               </tbody>
             </table>
           </div>
-          <div class="modal fade" data-bs-backdrop='static' id="import_user" tabindex="-1">
+          <div class="modal fade" data-bs-backdrop='static' id="import_shipping_companies" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered modal-lg">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title">Import Shipping Company</h5>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="import_users.php" method="POST" enctype="multipart/form-data">  
+                <form action="php/ched/import_shipping_companies.php" method="POST" enctype="multipart/form-data">  
                   <div class="modal-body">
                     <div class="row mb-3">
                       <label for="inputEmail3" class="col-sm-2 col-form-label">Import File</label>

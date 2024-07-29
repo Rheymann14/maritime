@@ -68,7 +68,7 @@
                   session_start();
                   $curl = curl_init();
                   curl_setopt_array($curl, [
-                      CURLOPT_URL => "http://127.0.0.1:8000/api/maritime-programs",
+                      CURLOPT_URL => $_SESSION['default_ip']."/api/maritime-programs",
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_CUSTOMREQUEST => "GET",
                       CURLOPT_HTTPHEADER => [

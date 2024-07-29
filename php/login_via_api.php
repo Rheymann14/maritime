@@ -12,6 +12,7 @@
 <body>
 <?php
 session_start();
+$_SESSION['default_ip'] = "192.168.1.128:8000";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
@@ -23,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $curl = curl_init();
     curl_setopt_array($curl, [
-        CURLOPT_URL => "http://127.0.0.1:8000/api/login",
+        CURLOPT_URL => $_SESSION['default_ip']."/api/login",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_HTTPHEADER => [

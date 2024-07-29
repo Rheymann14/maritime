@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jsonPostData = json_encode($postData);
 
     // cURL to post data to API
-    $ch = curl_init('http://127.0.0.1:8000/api/mhei'); // Replace with your API endpoint
+    $ch = curl_init($_SESSION['default_ip']."/api/mhei"); // Replace with your API endpoint
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPostData);

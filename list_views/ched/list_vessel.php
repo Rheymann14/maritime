@@ -31,12 +31,26 @@
           <h5 class="card-title"><?php echo json_encode($id)==0?'':htmlspecialchars($text).'\'s '; ?>Vessel List</h5>
           <div class="d-flex justify-content-between">
             <div>
-              <a href="export_users.php" type="button" class="btn btn-primary">
+              <!-- <a href="export_users.php" type="button" class="btn btn-primary me-2">
                 <i class="ri-file-excel-2-line"></i> Export
-              </a>
-              <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#import_user">
-                <i class="bx bxs-file-import"></i> Import
-              </button>
+              </a> -->
+              <div class="dropdown">
+                <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  <i class="bx bxs-file-import"></i> Import
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#import_mhei">
+                          Upload Excel
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="files/mheis-template.xlsx" download>
+                          Download Template
+                      </a>
+                    </li>
+                </ul>
+              </div>
             </div>
             <button type="button" class="btn btn-success ms-auto" data-bs-toggle="modal" data-bs-target="#add_vessel">
                 <i class="bx bxs-plus-circle"></i> Add
@@ -65,10 +79,10 @@
                   session_start();
                   $curl = curl_init();
                   if ($id > 0) {
-                    $url = "http://127.0.0.1:8000/api/shipping-company/".$id;
+                    $url = $_SESSION['default_ip']."/api/shipping-company/".$id;
                   }
                   else {
-                    $url = "http://127.0.0.1:8000/api/vessels";
+                    $url = $_SESSION['default_ip']."/api/vessels";
                   }
                   curl_setopt_array($curl, [
                       CURLOPT_URL => $url,
@@ -176,7 +190,7 @@
                                 session_start();
                                 $curl = curl_init();
                                 curl_setopt_array($curl, [
-                                    CURLOPT_URL => "http://127.0.0.1:8000/api/shipping-companys",
+                                    CURLOPT_URL => $_SESSION['default_ip']."/api/shipping-companys",
                                     CURLOPT_RETURNTRANSFER => true,
                                     CURLOPT_CUSTOMREQUEST => "GET",
                                     CURLOPT_HTTPHEADER => [

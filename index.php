@@ -8,7 +8,7 @@ if(!isset($_SESSION['username'])) {
 
   $curl = curl_init();
   curl_setopt_array($curl, [
-      CURLOPT_URL => "http://127.0.0.1:8000/api/user/".$_SESSION['user_id'],
+      CURLOPT_URL => $_SESSION['default_ip']."/api/user/".$_SESSION['user_id'],
       CURLOPT_RETURNTRANSFER => true,
       CURLOPT_CUSTOMREQUEST => "GET",
       CURLOPT_HTTPHEADER => [
@@ -308,27 +308,28 @@ if(!isset($_SESSION['username'])) {
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-      <li class="nav-item">
-        <a class="nav-link"  id="dashboard-link" href="index">
-          <i class="bi bi-grid"></i>
-          <span>Dashboard</span>
-        </a>
-      </li><!-- End Dashboard Nav -->
+      <?php if ($user_level == 1): ?>
+        <li class="nav-item">
+          <a class="nav-link"  id="dashboard-link" href="index">
+            <i class="bi bi-grid"></i>
+            <span>Dashboard</span>
+          </a>
+        </li><!-- End Dashboard Nav -->
 
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" id="users-link" style="cursor:pointer;">
-          <i class="bi bi-person"></i>
-          <span>Users</span>
-        </a>
-      </li>
-      <!-- <li class="nav-item">
-        <a class="nav-link collapsed" id="users-link" style="cursor:pointer;">
-          <i class="bi bi-file-pdf"></i>
-          <span>SO Requests</span>
-        </a>
-      </li> -->
-      <?php if ($user_level == 2): ?>
+        <li class="nav-item">
+          <a class="nav-link collapsed" id="users-link" style="cursor:pointer;">
+            <i class="bi bi-person"></i>
+            <span>Users</span>
+          </a>
+        </li>
+        <!-- <li class="nav-item">
+          <a class="nav-link collapsed" id="users-link" style="cursor:pointer;">
+            <i class="bi bi-file-pdf"></i>
+            <span>SO Requests</span>
+          </a>
+        </li> -->
+      <?php elseif ($user_level == 2): ?>
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#" id= "management-link">
             <i class="bi bi-menu-button-wide"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -353,15 +354,15 @@ if(!isset($_SESSION['username'])) {
         </li><!-- End Components Nav -->
       <?php elseif ($user_level == 3): ?>
         <li class="nav-item">
+          <a id="mhei-link" style="cursor:pointer;" class="nav-link">
+            <i class="bi bi-buildings"></i><span>Maritime Higher Education Institutions</span>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#" id= "management-link">
-            <i class="bi bi-menu-button-wide"></i><span>Management</span><i class="bi bi-chevron-down ms-auto"></i>
+            <i class="bi bi-menu-button-wide"></i><span>MARINA Accreditted</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
           <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-            <li>
-              <a id="mhei-link" style="cursor:pointer;" class="">
-                <i class="bi bi-circle"></i><span>MHEIS</span>
-              </a>
-            </li>
             <li>
               <a id="shipping-company-link" style="cursor:pointer;" class="">
                 <i class="bi bi-circle"></i><span>Shipping Companies</span>
@@ -372,15 +373,19 @@ if(!isset($_SESSION['username'])) {
                 <i class="bi bi-circle"></i><span>Vessels</span>
               </a>
             </li>
-            <li>
-              <a id="pcg-staff-link" style="cursor:pointer;" class="">
-                <i class="bi bi-circle"></i><span>PCG Staffs</span>
-              </a>
-            </li>
-      
-    
           </ul>
-        </li><!-- End Components Nav -->
+        </li>
+        <li class="nav-item">
+          <a id="pcg-staff-link" style="cursor:pointer;" class="nav-link collapsed">
+            <i class="bi bi-people"></i><span>Philippine Coast Guard Accounts</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a id="pcg-staff-link" style="cursor:pointer;" class="nav-link collapsed">
+            <i class="bi bi-map"></i><span>Vessel Navigation</span>
+          </a>
+        </li>
+      <!-- </li>End Components Nav -->
       <?php elseif ($user_level == 4): ?>
         <li class="nav-item">
           <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#" id= "management-link">
@@ -430,10 +435,10 @@ if(!isset($_SESSION['username'])) {
         $('#loader').hide();
         $('#dashboard-link').addClass('collapsed');
         $('#users-link').addClass('collapsed');
-        $('#mhei-link').removeClass('active'); 
+        $('#mhei-link').addClass('collapsed');
         $('#shipping-company-link').removeClass('active'); 
         $('#vessel-link').removeClass('active'); 
-        $('#pcg-staff-link').removeClass('active'); 
+        $('#pcg-staff-link').addClass('collapsed');
         $('#maritime-programs-link').removeClass('active'); 
         $('#students-link').removeClass('active'); 
         $('#ots-link').removeClass('active'); 
@@ -444,6 +449,12 @@ if(!isset($_SESSION['username'])) {
         // Check if 'load' parameter exists in the URL
         var urlParams = new URLSearchParams(window.location.search);
         var loadPage = urlParams.get('load');
+
+        $('#loader').show();
+        $('#main').load('list_views/ched/list_mhei.php', function() {
+          updateUI();
+          $('#mhei-link').removeClass('collapsed');
+        });
 
         if (loadPage) {
             $('#loader').show();
@@ -500,7 +511,11 @@ if(!isset($_SESSION['username'])) {
             $('#loader').show();
             $('#main').load('list_views/ched/list_mhei.php', function() {
               updateUI();
-              $('#mhei-link').addClass('active'); 
+              if ($('#components-nav').hasClass('show')) {
+                $('#management-link').removeClass('collapsed');
+                $('#components-nav').collapse('hide'); // Collapse if it's currently shown
+              }
+              $('#mhei-link').removeClass('collapsed');
             });
         });
         $('#shipping-company-link').click(function(event) {
@@ -524,7 +539,11 @@ if(!isset($_SESSION['username'])) {
             $('#loader').show();
             $('#main').load('list_views/ched/list_pcg_staff.php', function() {
               updateUI();
-              $('#pcg-staff-link').addClass('active'); 
+              if ($('#components-nav').hasClass('show')) {
+                $('#management-link').removeClass('collapsed');
+                $('#components-nav').collapse('hide'); // Collapse if it's currently shown
+              }
+              $('#pcg-staff-link').removeClass('collapsed');
             });
         });
         $('#maritime-programs-link').click(function(event) {
@@ -538,7 +557,7 @@ if(!isset($_SESSION['username'])) {
         $('#students-link').click(function(event) {
             event.preventDefault();
             $('#loader').show();
-            $('#main').load('list_views/mhei/list_pcg_staff.php', function() {
+            $('#main').load('list_views/mhei/list_students.php', function() {
               updateUI();
               $('#students-link').addClass('active'); 
             });

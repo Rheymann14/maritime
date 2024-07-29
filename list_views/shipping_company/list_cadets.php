@@ -73,7 +73,7 @@
                   session_start();
                   $curl = curl_init();
                   curl_setopt_array($curl, [
-                      CURLOPT_URL => "http://127.0.0.1:8000/api/cadets",
+                      CURLOPT_URL => $_SESSION['default_ip']."/api/cadets",
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_CUSTOMREQUEST => "GET",
                       CURLOPT_HTTPHEADER => [
@@ -94,31 +94,38 @@
                     $cadets = json_decode($response, 1);
                     foreach ($cadets as $i => $cadet) {
                       $i++;
-                      echo "<tr>";
-                        echo "<td>{$i}</td>
-                        <td>{$cadet['student']['student_number']}</td>
-                        <td>{$cadet['student']['user']['name']}</td>
-                        <td>{$cadet['student']['maritime_program']['course']}</td>
-                        <td>{$cadet['student']['maritime_program']['mhei']['school_name']}</td>
-                        <td>{$cadet['vessel']['vessel_name']}</td>
-                        <td>{$cadet['days_onboard']}</td>
-                        <td>{$cadet['days_remaining']}</td>";
-                        $status = $cadet['status'];
-                        if ($status == 'OFFERED') {
-                          echo "<td><span class='badge rounded-pill bg-success'>{$status}</span></td>";
-                        } elseif ($status == 'NOT OFFERED') {
-                          echo "<td><span class='badge rounded-pill bg-danger'>{$status}</span></td>";
-                        } else {
-                          echo "<td><span class='badge rounded-pill bg-secondary'>No Status</span></td>";
-                        }
-                        echo
-                        "<td align='center' style='text-align: center; width: 10%'>                  
-                          <a href='php/delete_users.php?id=" . $cadet['id'] . "' class='btn btn-danger btn-sm' data-toggle='tooltip' title='Delete Record' onclick=\"return confirm('Are you sure you want to delete this record?')\"><i class='ri-delete-bin-2-line'></i></a>
-                          <a class='btn btn-success btn-sm generateCSS' data-cadet=" . $cadet . " data-toggle='tooltip' title='Generate CSS'>
-                              <i class='ri-file-download-line'></i>
-                          </a>
-                        </td>";
-                      echo "</tr>";
+                ?>
+                      <tr>
+                        <td><?php echo $i ?></td>
+                        <td><?php echo $cadet['student']['student_number']?></td>
+                        <td><?php echo $cadet['student']['user']['name']?></td>
+                        <td><?php echo $cadet['student']['maritime_program']['course']?></td>
+                        <td><?php echo $cadet['student']['maritime_program']['mhei']['school_name']?></td>
+                        <td><?php echo $cadet['vessel']['vessel_name']?></td>
+                        <td><?php echo $cadet['days_onboard']?></td>
+                        <td><?php echo $cadet['days_remaining']?></td>
+                        <td>ONBOARD</td>
+                        <?php
+                          echo
+                          "<td align='center' style='text-align: center; width: 10%'>                  
+                            <a href='php/delete_users.php?id=" . $cadet['id'] . "' class='btn btn-danger btn-sm' data-toggle='tooltip' title='Delete Record' onclick=\"return confirm('Are you sure you want to delete this record?')\"><i class='ri-delete-bin-2-line'></i></a>";
+                        ?>
+                        <a class='btn btn-success btn-sm' id='generatePDF' data-toggle='tooltip' title='Generate CSS'
+                            data-name="<?php echo $cadet['student']['user']['name']; ?>"
+                            data-vessel="<?php echo $cadet['vessel']['vessel_name']; ?>"
+                            data-vesselType="<?php echo $cadet['vessel']['type']; ?>"
+                            data-registry="<?php echo $cadet['vessel']['registry_number']; ?>"
+                            data-kw="<?php echo $cadet['vessel']['kw']; ?>"
+                            data-grt="<?php echo $cadet['vessel']['grt']; ?>"
+                            data-days="<?php echo $cadet['current_vessel']['days_onboard']; ?>"
+                            data-embarkation="<?php echo $cadet['current_vessel']['embarkation_date']; ?>"
+                            data-disembarkation="<?php echo $cadet['current_vessel']['disembarkation_date']; ?>"
+                        >
+                            <i class='ri-file-download-line'></i>
+                        </a>
+                        </td>
+                      </tr>
+                <?php 
                     }
                   }
                 ?>   
@@ -191,22 +198,36 @@
 <script>
   $(document).ready(function() {
     $('#pcgStaffTable').DataTable();
-
-    $(document).on('click', '.generateCSS', function(event) {
-      var cadet = $(this).data('cadet');
-      $.ajax({
-          type: 'POST',
-          url: 'export_css.php',
-          // data: { data: cadet },
-          success: function(response) {
-              // Assuming the response is a URL to the generated file
-              $('#main').load('list_views/mhei/list_cadets.php');
-              window.location.href = response;
-          },
-          error: function(error) {
-              console.log('Error:', error);
-          }
-      });
+    
+    $('#generatePDF').click(function(){
+        $.ajax({
+            url: 'export_css.php',
+            type: 'POST',
+            data: {
+              name: $(this).data('name'),
+              vessel: $(this).data('vessel'),
+              vesselType: $(this).data('vesselType'),
+              registry: $(this).data('registry'),
+              kw: $(this).data('kw'),
+              grt: $(this).data('grt'),
+              days: $(this).data('days'),
+              embarkation: $(this).data('embarkation'),
+              disembarkation: $(this).data('disembarkation'),
+            },
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(response) {
+                var blob = new Blob([response], { type: 'application/pdf' });
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(blob);
+                link.download = "CSS.pdf";
+                link.click();
+            },
+            error: function(xhr, status, error) {
+                console.error("Error: " + status + " - " + error);
+            }
+        });
     });
 
     $('#pcgStaffFormAdd').on('submit', function(event) {

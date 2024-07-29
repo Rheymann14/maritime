@@ -57,9 +57,14 @@
               <thead>
                 <tr>
                   <th>No</th>
+                  <th>Student Number</th>
+                  <th>Name</th>
+                  <th>Gender</th>
                   <th>Course</th>
-                  <th>Description</th>
-                  <th>Status
+                  <th>Year CAR</th>
+                  <th>Days On Board</th>
+                  <th>Days Remaining</th>
+                  <th>Status</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -68,7 +73,7 @@
                   session_start();
                   $curl = curl_init();
                   curl_setopt_array($curl, [
-                      CURLOPT_URL => "http://127.0.0.1:8000/api/students",
+                      CURLOPT_URL => $_SESSION['default_ip']."/api/students",
                       CURLOPT_RETURNTRANSFER => true,
                       CURLOPT_CUSTOMREQUEST => "GET",
                       CURLOPT_HTTPHEADER => [
@@ -91,8 +96,13 @@
                       $i++;
                       echo "<tr>";
                         echo "<td>{$i}</td>
-                        <td>{$student['course']}</td>
-                        <td>{$student['description']}</td>";
+                        <td>{$student['student_number']}</td>
+                        <td>{$student['user']['name']}</td>
+                        <td>{$student['gender']}</td>
+                        <td>{$student['maritime_program']['course']}
+                        <td>{$student['year_car']}</td>
+                        <td>{$student['days_onboard']}
+                        <td>{$student['days_remaining']}</td>";
                         $status = $student['status'];
                         if ($status == 'OFFERED') {
                           echo "<td><span class='badge rounded-pill bg-success'>{$status}</span></td>";
@@ -145,15 +155,77 @@
                 </div>
                 <div class="modal-body">
                   <form id="pcgStaffFormAdd" method="POST" enctype="multipart/form-data">
-                    <div class="d-flex justify-content-start mb-3">
-                      <div class="me-3">
-                        <label for="courseAdd" class="form-label">Course</label>
-                        <input type="text" class="form-control" id="courseAdd" name="course" required>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="maritime_program_idAdd" class="form-label">Course</label>
+                        <select class="form-select" id="maritime_program_idAdd" name="maritime_program_id" required>
+                            <?php
+                                session_start();
+                                $curl = curl_init();
+                                curl_setopt_array($curl, [
+                                    CURLOPT_URL => $_SESSION['default_ip']."/api/maritime-programs",
+                                    CURLOPT_RETURNTRANSFER => true,
+                                    CURLOPT_CUSTOMREQUEST => "GET",
+                                    CURLOPT_HTTPHEADER => [
+                                        "Accept: application/json",
+                                        "Content-Type: application/json",
+                                        "Authorization: Bearer " .$_SESSION['token']
+                                    ]
+                                ]);
+
+                                $response = curl_exec($curl);
+                                $err = curl_error($curl);
+
+                                curl_close($curl);
+
+                                if ($err) {
+                                    echo "<option value=''>Error: $err</option>";
+                                } else {
+                                    $maritimePrograms = json_decode($response, true);
+                                    if (json_last_error() === JSON_ERROR_NONE) {
+                                        if (is_array($maritimePrograms)) {
+                                            foreach ($maritimePrograms as $maritimeProgram) {
+                                                echo "<option value='{$maritimeProgram['id']}'>{$maritimeProgram['course']}</option>";
+                                            }
+                                        } else {
+                                            echo "<option value=''>Error: Unexpected API response format</option>";
+                                        }
+                                    } else {
+                                        echo "<option value=''>Error: Invalid JSON response</option>";
+                                    }
+                                }
+                            ?>
+                          </select>
                       </div>
-                      <div class="me-3">
-                        <label for="descriptionAdd" class="form-label">Description</label>
-                        <input type="text" class="form-control" id="descriptionAdd" name="description" required>
+                      <div class="col-md-6">
+                        <label for="genderAdd" class="form-label">Gender</label>
+                        <select class="form-select" id="genderAdd" name="gender" required>
+                          <option value="MALE">Male</option>
+                          <option value="FEMALE">Female</option>
+                        </select>
                       </div>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="student_numberAdd" class="form-label">Student Number</label>
+                        <input type="text" class="form-control" id="student_numberAdd" name="student_number" required>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="year_carAdd" class="form-label">CAR Achieved Year</label>
+                        <input type="text" class="form-control" id="year_carAdd" name="year_car" required>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="nameAdd" class="form-label">Name</label>
+                      <input type="text" class="form-control" id="nameAdd" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="emailAdd" class="form-label">Email</label>
+                      <input type="email" class="form-control" id="emailAdd" name="email" required>
+                    </div>
+                    <div class="mb-3">
+                      <label for="contact_numberAdd" class="form-label">Contact Number</label>
+                      <input type="tel" class="form-control" id="contact_numberAdd" name="contact_number" required>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

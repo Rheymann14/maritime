@@ -3,11 +3,11 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Get form data
     $company_name = $_POST['name'];
-    $username = 'SC-'.$_POST['username'];
-    $region = $_POST['region'];
     $address = $_POST['address'];
+    $region = $_POST['region'];
     $email = $_POST['emailAddress'];
     $contact_number = $_POST['contactNumber'];
+    $username = 'SC-'.$_POST['username'];
     $logo = $_POST['logo'];
     $gender = 'MALE';
 
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $jsonPostData = json_encode($postData);
 
     // cURL to post data to API
-    $ch = curl_init('http://127.0.0.1:8000/api/shipping-company'); // Replace with your API endpoint
+    $ch = curl_init($_SESSION['default_ip']."/api/shipping-company"); // Replace with your API endpoint
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPostData);

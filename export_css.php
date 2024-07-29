@@ -2,7 +2,15 @@
 require 'vendor_pdf/vendor/autoload.php';
 use Dompdf\Dompdf;
 
-
+$name = $_POST['name'];
+$vessel = $_POST['vessel'];
+$vesselType = $_POST['vesselType'];
+$registry = $_POST['registry'];
+$kw = $_POST['kw'];
+$grt = $_POST['grt'];
+$days = $_POST['days'];
+$embarkation = $_POST['embarkation'];
+$disembarkation = $_POST['disembarkation'];
 
 $path = 'assets/img/header.jpg';
 $type = pathinfo($path, PATHINFO_EXTENSION);
@@ -61,11 +69,11 @@ $html .= '<tr class="spacing-top-2">
           </tr>
 
           <tr class="spacing-top-1">
-            <td class="line-spacing">This certifies that <span style="text-decoration: underline; font-weight:bold;">  </span> had actually served under our Supervisor onboard <span style="font-weight:bold; text-decoration: underline;">Fastcat M15</span>,
-            <span style="text-decoration: underline; font-weight:bold;">Passenger</span> of <span style="text-decoration: underline; font-weight:bold;">Philippines</span> with Registry No. 
-            <span style="text-decoration: underline; font-weight:bold;">09-0000123</span> vessel of <span style="text-decoration: underline; font-weight:bold;">900</span> KW and 
-            <span style="text-decoration: underline; font-weight:bold;">650</span> Gross Tonnage for a period of <span style="text-decoration: underline; font-weight:bold;">1   12   5</span> from 
-            <span style="text-decoration: underline; font-weight:bold;">06/25/2024</span> as <span style="text-decoration: underline; font-weight:bold;">Supervisor</span>.</td>
+            <td class="line-spacing">This certifies that <span style="text-decoration: underline; font-weight:bold;"> ' . $name . ' </span> had actually served under our Supervisor onboard <span style="font-weight:bold; text-decoration: underline;">'.$vessel.'</span>,
+            <span style="text-decoration: underline; font-weight:bold;">'.$vesselType.'</span> of <span style="text-decoration: underline; font-weight:bold;">Philippines</span> with Registry No. 
+            <span style="text-decoration: underline; font-weight:bold;">'.$registry.'</span> vessel of <span style="text-decoration: underline; font-weight:bold;">'.$kw.'</span> KW and 
+            <span style="text-decoration: underline; font-weight:bold;">'.$grt.'</span> Gross Tonnage for a period of <span style="text-decoration: underline; font-weight:bold;">'.$days.'</span> from 
+            <span style="text-decoration: underline; font-weight:bold;">'.$embark.'</span> as <span style="text-decoration: underline; font-weight:bold;">Supervisor</span>.</td>
           </tr>';
 
 $html .= '<tr class="spacing-top-1">
